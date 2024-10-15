@@ -1,7 +1,7 @@
 ---
 title: My fancy presentation
 subtitle: For PHS 7045
-author: John Doe
+author: Michael Throolin
 format: revealjs
 embed-resources: true
 ---
@@ -14,6 +14,5 @@ embed-resources: true
 ```{r}
 #| label: some-code
 library(MASS)
-library(epiworldR)
 
 ```

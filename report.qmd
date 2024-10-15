@@ -1,15 +1,36 @@
 ---
 format: pdf
-author: John Doe
-title: My fancy presentation
+author: Michael Throolin
+title: My fancy report on FIDDLE
 subtitle: For PHS 7045
 ---
 
 # Section 1
 
-## Sub-section 1
+## Introduction
+
+FIDDLE stands for a "**F**lex**i**ble **D**ata-**D**riven Preprocessing Pipe**l**in**e**." This acronym is a bit of a stretch, but it is a useful tool for preprocessing data to obtain features for machine learning algorithms.
+
+The FIDDLE algorithm has been developed in Python [link to the github repo](https://github.com/MLD3/FIDDLE), but I would like to implement it in R for the purposes of this class final project.
+
+
+## Description of the solution plan
+
+
+## Preliminary results
 
 ```{r}
 #| label: some-code
 library(MASS)
 ```
+
+## Citations:
+
+@article{FIDDLE,
+    author = {Tang, Shengpu and Davarmanesh, Parmida and Song, Yanmeng and Koutra, Danai and Sjoding, Michael W and Wiens, Jenna},
+    title = "{Democratizing EHR analyses with FIDDLE: a flexible data-driven preprocessing pipeline for structured clinical data}",
+    journal = {Journal of the American Medical Informatics Association},
+    year = {2020},
+    month = {10},
+    doi = {10.1093/jamia/ocaa139},
+}
