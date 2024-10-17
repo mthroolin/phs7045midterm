@@ -3,15 +3,22 @@ format: pdf
 author: Michael Throolin
 title: My fancy report on FIDDLE
 subtitle: For PHS 7045
+bibliography: references.bib
 ---
 
 # Section 1
 
 ## Introduction
 
-FIDDLE stands for a "**F**lex**i**ble **D**ata-**D**riven Preprocessing Pipe**l**in**e**." This acronym is a bit of a stretch, but it is a useful tool for preprocessing data to obtain features for machine learning algorithms.
+FIDDLE stands for a "**F**lex**i**ble **D**ata-**D**riven Preprocessing Pipe**l**in**e**." This acronym is a bit of a stretch, but it is a useful tool for preprocessing data to obtain features for machine learning algorithms [@FIDDLE].
 
-The FIDDLE algorithm has been developed in Python [link to the github repo](https://github.com/MLD3/FIDDLE), but I would like to implement it in R for the purposes of this class final project.
+The FIDDLE algorithm has been developed in Python ([link to the github repo](https://github.com/MLD3/FIDDLE)), but I would like to implement it in R/Rcpp for the purposes of this class final project.
+
+
+
+FIDDLE (Flexible Data-Driven Pipeline) offers a robust solution for preprocessing structured clinical data, addressing common obstacles in EHR analyses. The pre_filter algorithm within FIDDLE plays a pivotal role in data cleaning and initial feature selection, effectively reducing the dataset to a manageable size while retaining essential information.
+
+The objective of this project is to implement FIDDLE's pre_filter algorithm in both R and C++, utilizing Rcpp for seamless integration. By comparing the performance and results of these implementations, we aim to identify the advantages and limitations of each approach, ultimately contributing to more efficient EHR data processing techniques.
 
 
 ## Description of the solution plan
@@ -21,16 +28,55 @@ The FIDDLE algorithm has been developed in Python [link to the github repo](http
 
 ```{r}
 #| label: some-code
-library(MASS)
+
+# Load microbenchmark
+library(microbenchmark)
+library(data.table)
+library(Rcpp)
+
+
+source("code/pre_filter.R")
+sourceCpp("code/pre_filter.cpp")
+source("code/generate_data.R")
+
+
+
+# Generate synthetic data
+data_list <- generate_data(num_records = 1e6, num_ids = 1e4, num_vars = 100)
+df <- data_list$df
+df_population <- data_list$df_population
+var_type_override = unlist(data_list$var_type_override)
+
+max.T = 10
+threshold = .02
+
+# Benchmarking
+set.seed(10162024)
+benchmark_result <- microbenchmark(
+  R_version = {
+    invisible(
+    result_R <- pre_filter_dt(df, df_population, threshold, max.T, var_type_override)
+    )
+  },
+  Cpp_version = {
+    invisible(
+    result_Cpp <- pre_filter_cpp(df, df_population, threshold, max.T, var_type_override)
+    )
+  },
+  times = 5L  # Number of times to run each function
+)
+
+# Display benchmark results
+print(benchmark_result)
 ```
 
 ## Citations:
 
 @article{FIDDLE,
-    author = {Tang, Shengpu and Davarmanesh, Parmida and Song, Yanmeng and Koutra, Danai and Sjoding, Michael W and Wiens, Jenna},
-    title = "{Democratizing EHR analyses with FIDDLE: a flexible data-driven preprocessing pipeline for structured clinical data}",
-    journal = {Journal of the American Medical Informatics Association},
-    year = {2020},
-    month = {10},
-    doi = {10.1093/jamia/ocaa139},
+author = {Tang, Shengpu and Davarmanesh, Parmida and Song, Yanmeng and Koutra, Danai and Sjoding, Michael W and Wiens, Jenna},
+title = "{Democratizing EHR analyses with FIDDLE: a flexible data-driven preprocessing pipeline for structured clinical data}",
+journal = {Journal of the American Medical Informatics Association},
+year = {2020},
+month = {10},
+doi = {10.1093/jamia/ocaa139},
 }
