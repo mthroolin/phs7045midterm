@@ -6,77 +6,115 @@ subtitle: For PHS 7045
 bibliography: references.bib
 ---
 
-# Section 1
+# Introduction
 
-## Introduction
-
-FIDDLE stands for a "**F**lex**i**ble **D**ata-**D**riven Preprocessing Pipe**l**in**e**." This acronym is a bit of a stretch, but it is a useful tool for preprocessing data to obtain features for machine learning algorithms [@FIDDLE].
-
-The FIDDLE algorithm has been developed in Python ([link to the github repo](https://github.com/MLD3/FIDDLE)), but I would like to implement it in R/Rcpp for the purposes of this class final project.
+Electronic health record (EHR) data and machine learning tools have been useful in the realm of developing patient risk stratification models. However, EHR is often suffers from the curse of dimensionality and has irregular sampling. As such, before a researcher can use machine learning tools they have to preprocess the data, which is often tedious and time consuming. The preprocessing often requires decisions regarding variable selection, data resampling, and dealing with missing values. Such decisions vary across studies. FIDDLE [@FIDDLE] was proposed as an algorithm to streamline this process.
 
 
+FIDDLE (Flexible Data-Driven Pipeline) is a systematic approach to transform structured EHR data into ML-ready representations. It is a data-driven approach which allows for some customization. The preprocessing steps of FIDDLE, as described by [@FIDDLE], involve three main stages:
 
-FIDDLE (Flexible Data-Driven Pipeline) offers a robust solution for preprocessing structured clinical data, addressing common obstacles in EHR analyses. The pre_filter algorithm within FIDDLE plays a pivotal role in data cleaning and initial feature selection, effectively reducing the dataset to a manageable size while retaining essential information.
+**Pre-filter:**
 
-The objective of this project is to implement FIDDLE's pre_filter algorithm in both R and C++, utilizing Rcpp for seamless integration. By comparing the performance and results of these implementations, we aim to identify the advantages and limitations of each approach, ultimately contributing to more efficient EHR data processing techniques.
+- Remove rows with timestamps outside the observation period and eliminate rarely occurring variables to speed up downstream analysis.
+
+**Transform:**
+
+- Time-invariant data are concatenated into a table.
+
+- Time-dependent data are concatenated into a tensor, with non-frequent variables represented by their most recent recorded value and frequent variables represented by summary statistics.
+
+- Missing values are handled using carry-forward imputation with a "presence mask" to track imputed values.
+
+**Post-filter:**
+
+- Features that are unlikely to be informative, such as those that are almost constant across examples, are removed. Duplicated features are also combined into a single feature.
+
+These preprocessing steps are designed to systematically transform structured EHR data into feature vectors that can be used for machine learning models.
+
+IDDLE code was developed in Python ([github repo](https://github.com/MLD3/FIDDLE)). For my project I am translating this code to R. This is part of a group assignment I am doing for my EHR class where we will propose improvements to FIDDLE. I will code these improvements in R.
 
 
-## Description of the solution plan
 
 
-## Preliminary results
+# Description of the solution plan
 
-```{r}
+From my preliminary reading of the python code, I have identified the following steps to translate the code to R:
+
+1. Change items stored as a data frame to a data table
+2. Use Rcpp to speed up the code where possible.
+3. Parallelize what I can. As this is data preprocessing I can probably split the data up  to do this once I have all the functions up and running.
+
+After I have finished the main translation, I plan to explore a couple changes to the FIDDLE pipeline:
+
+- Use a different imputation method for missing values. The last value carried forward may not be feasible in every pipeline.
+
+- Use a different method for removing features that are unlikely to be informative. The method used in the FIDDLE pipeline is based on constant thresholds rather than an score-based system. I could implement some feature importance metric for this filtering.
+
+
+# Preliminary results
+
+For the sake of this midterm, I have preprogrammed the pre-filter step in R and C++. I simulated some data to verify both codes produce the same results, then used microbenchmark to run the Rcpp code 100 times and to determine which was faster, my data.table code or my Rcpp code. You can check my code inside the [code folder of this project's github repo](https://github.com/mthroolin/phs7045midterm/tree/main/code).
+
+
+A summary of the simulated data:
+
+- 995165 rows of data
+
+- 10000 subject-specific IDs
+
+- 100 variables, 90 numerical and 10 categorical
+
+- Time measurements between 0 and 10
+
+
+Below I show how the data looks after it is processed as well as the timing results of the pre-filter code in R versus C++. It appears that using data.table in R was much faster than using Rcpp. 
+
+
+
+A sample of how the data looks after the pre-filter step:
+```{r setup}
 #| label: some-code
+#| echo: false
 
-# Load microbenchmark
-library(microbenchmark)
-library(data.table)
-library(Rcpp)
-
-
+# Load libraries
+library(microbenchmark); library(data.table); library(Rcpp)
+set.seed(10162024)
+source("code/generate_data.R")
 source("code/pre_filter.R")
 sourceCpp("code/pre_filter.cpp")
-source("code/generate_data.R")
 
 
+result_R <- pre_filter_dt(df, df_population, threshold, max.T, var_type_override)
+result_Cpp <- pre_filter_cpp(df, df_population, threshold, max.T, var_type_override)
 
-# Generate synthetic data
-data_list <- generate_data(num_records = 1e6, num_ids = 1e4, num_vars = 100)
-df <- data_list$df
-df_population <- data_list$df_population
-var_type_override = unlist(data_list$var_type_override)
+head(result_R)
+```
 
-max.T = 10
-threshold = .02
 
+Timing Results:
+
+```{r timing}
+#| echo: false
+#| cache: true
 # Benchmarking
 set.seed(10162024)
 benchmark_result <- microbenchmark(
   R_version = {
-    invisible(
     result_R <- pre_filter_dt(df, df_population, threshold, max.T, var_type_override)
-    )
   },
   Cpp_version = {
-    invisible(
     result_Cpp <- pre_filter_cpp(df, df_population, threshold, max.T, var_type_override)
-    )
   },
-  times = 5L  # Number of times to run each function
+  times = 5  # Number of times to run each function
 )
 
 # Display benchmark results
 print(benchmark_result)
 ```
 
-## Citations:
 
-@article{FIDDLE,
-author = {Tang, Shengpu and Davarmanesh, Parmida and Song, Yanmeng and Koutra, Danai and Sjoding, Michael W and Wiens, Jenna},
-title = "{Democratizing EHR analyses with FIDDLE: a flexible data-driven preprocessing pipeline for structured clinical data}",
-journal = {Journal of the American Medical Informatics Association},
-year = {2020},
-month = {10},
-doi = {10.1093/jamia/ocaa139},
-}
+
+
+# Appendix
+
+## References

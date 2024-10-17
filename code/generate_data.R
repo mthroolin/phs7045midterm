@@ -42,3 +42,13 @@ generate_data <- function(num_records, num_ids, num_vars) {
   
   return(list(df = df, df_population = df_population, var_type_override = var_type_override))
 }
+
+
+# Generate synthetic data
+data_list <- generate_data(num_records = 1e6, num_ids = 1e4, num_vars = 100)
+df <- data_list$df
+df_population <- data_list$df_population
+var_type_override = unlist(data_list$var_type_override)
+
+max.T = 10
+threshold = .02
