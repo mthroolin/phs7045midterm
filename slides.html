@@ -1221,8 +1221,7 @@ Michael Throolin
 <li><strong>Time-dependent data</strong>:
 <ul>
 <li>Concatenated into a tensor.</li>
-<li>Non-frequent variables: Represented by the most recent recorded value.</li>
-<li>Frequent variables: Represented by summary statistics.</li>
+<li>Multiple recordings per time bin: use the most recent recording.</li>
 </ul></li>
 <li>Handle missing values using <strong>carry-forward imputation</strong>.</li>
 </ul>
@@ -1270,7 +1269,6 @@ Michael Throolin
 <li><strong>Feature Removal</strong>: Implement feature importance metrics instead of constant thresholds.</li>
 </ul>
 </section></section>
-<section>
 <section id="preliminary-results" class="title-slide slide level1 center">
 <h1>Preliminary Results</h1>
 <ul>
@@ -1279,10 +1277,7 @@ Michael Throolin
 <li><strong>Microbenchmarking</strong>: R code outperformed C++ code (because of data.table?).</li>
 </ul>
 </section>
-<section class="slide level2">
 
-</section></section>
-<section>
 <section id="data-summary" class="title-slide slide level1 center">
 <h1>Data Summary</h1>
 <ul>
@@ -1295,9 +1290,7 @@ Michael Throolin
 </ul></li>
 </ul>
 </section>
-<section class="slide level2">
 
-</section></section>
 <section id="timing-results" class="title-slide slide level1 center">
 <h1>Timing Results</h1>
 <ul>
@@ -1328,13 +1321,8 @@ Michael Throolin
 </ul>
 </section>
 
-<section>
-<section id="appendix" class="title-slide slide level1 center">
-<h1>Appendix</h1>
-
-</section>
-<section id="references" class="slide level2 smaller scrollable">
-<h2>References</h2>
+<section id="references" class="title-slide slide level1 smaller scrollable">
+<h1>References</h1>
 <div class="footer footer-default">
 
 </div>
@@ -1343,7 +1331,7 @@ Michael Throolin
 Tang, Shengpu, Parmida Davarmanesh, Yanmeng Song, Danai Koutra, Michael W Sjoding, and Jenna Wiens. 2020. <span>“<span class="nocase">Democratizing EHR analyses with FIDDLE: a flexible data-driven preprocessing pipeline for structured clinical data</span>.”</span> <em>Journal of the American Medical Informatics Association</em>, October. <a href="https://doi.org/10.1093/jamia/ocaa139">https://doi.org/10.1093/jamia/ocaa139</a>.
 </div>
 </div>
-</section></section>
+</section>
     </div>
   </div>
 

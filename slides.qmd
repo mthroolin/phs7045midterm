@@ -36,8 +36,7 @@ bibliography: references.bib
 - **Time-invariant data**: Concatenated into a table.
 - **Time-dependent data**:
   - Concatenated into a tensor.
-  - Non-frequent variables: Represented by the most recent recorded value.
-  - Frequent variables: Represented by summary statistics.
+  - Multiple recordings per time bin: use the most recent recording.
 - Handle missing values using **carry-forward imputation**.
 
 ## Post-filter
@@ -74,8 +73,6 @@ bibliography: references.bib
 - Simulated data to verify results matched between R and C++ codes.
 - **Microbenchmarking**: R code outperformed C++ code (because of data.table?).
 
----
-
 # Data Summary
 
 - **Simulated Data**:
@@ -83,8 +80,6 @@ bibliography: references.bib
   - 10,000 subject-specific IDs.
   - 100 variables: 90 numerical and 10 categorical.
   - Time measurements between **0 and 10**.
-
----
 
 # Timing Results
 
@@ -131,7 +126,5 @@ print(benchmark_result)
 - Complete the translation of the **remaining pipeline steps** to R.
 - Experiment with alternative **imputation** and **feature selection** methods.
 
-# Appendix
-
-## References
+# References
 
