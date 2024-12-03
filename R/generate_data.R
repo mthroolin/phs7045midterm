@@ -1,4 +1,30 @@
-# Function to generate synthetic data without duplicates for numerical variables
+#' Generate Synthetic Data Without Duplicates for Numerical Variables
+#'
+#' This function generates a synthetic dataset with specified numbers of records, IDs, 
+#' and variables. Numerical variables are ensured to have no duplicates across `ID`, 
+#' `t`, and `var`. It also generates metadata for variable types and population data.
+#'
+#' @param num_records Integer. The total number of records to generate.
+#' @param num_ids Integer. The total number of unique IDs to generate.
+#' @param num_vars Integer. The total number of variables to generate.
+#' @return A list containing the following elements:
+#' \item{df}{A `data.table` with the generated dataset, including `ID`, `t`, `var`, and `value`.}
+#' \item{df_population}{A `data.table` with the population data (unique IDs).}
+#' \item{var_type_override}{A named vector indicating whether each variable is "numerical" or "categorical".}
+#' @importFrom data.table data.table :=
+#' @importFrom stats rnorm
+#' @examples
+#' # Generate a dataset with 1000 records, 100 unique IDs, and 50 variables
+#' data_list <- generate_data(num_records = 1000, num_ids = 100, num_vars = 50)
+#' df <- data_list$df
+#' df_population <- data_list$df_population
+#' var_type_override <- data_list$var_type_override
+#'
+#' # Inspect the generated data
+#' head(df)
+#' head(df_population)
+#' var_type_override
+#' @export
 generate_data <- function(num_records, num_ids, num_vars) {
   # Generate IDs
   IDs <- sample(1:num_ids, num_records, replace = TRUE)
@@ -12,15 +38,17 @@ generate_data <- function(num_records, num_ids, num_vars) {
   # Generate variable types (categorical or numerical)
   var_types <- rep("numerical", num_vars)
   categorical_vars <- paste0("var", sample(1:num_vars, num_vars * 0.1))  # 10% categorical
-  var_types[match(categorical_vars, paste0("var", 1:num_vars))] <- "categorical"
+  if (!is.null(categorical_vars) && length(categorical_vars) > 0) {
+    var_types[match(categorical_vars, paste0("var", 1:num_vars), nomatch = 0)] <- "categorical"
+  }
   var_type_override <- setNames(var_types, paste0("var", 1:num_vars))
   
   # Combine into a data.table
   df <- data.table(
     ID = as.character(IDs),
     t = t_values,
-    var = vars) |>
-    unique()
+    var = vars
+  ) |> unique()
   
   # Identify numerical variables
   numerical_vars <- names(var_type_override)[var_type_override == "numerical"]
@@ -42,13 +70,3 @@ generate_data <- function(num_records, num_ids, num_vars) {
   
   return(list(df = df, df_population = df_population, var_type_override = var_type_override))
 }
-
-
-# Generate synthetic data
-data_list <- generate_data(num_records = 1e6, num_ids = 1e4, num_vars = 100)
-df <- data_list$df
-df_population <- data_list$df_population
-var_type_override = unlist(data_list$var_type_override)
-
-max.T = 10
-threshold = .02

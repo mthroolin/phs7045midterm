@@ -1,0 +1,8 @@
+[tool.poetry]
+name = "FIDDLE"
+version = "0.1.0"
+description = "A short description of your package"
+authors = ["Your Name <your_email@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"

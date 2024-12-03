@@ -1,7 +1,43 @@
+#' Pre-filter Data Table in Parallel
+#'
+#' This function performs pre-filtering on a data.table in parallel. It filters rows based on population,
+#' time constraints, and variable types. It also calculates variable frequencies in parallel and removes
+#' variables that do not meet a specified frequency threshold.
+#'
+#' @param df A data.table containing the main dataset to filter.
+#' @param df_population A data.table containing the population data for filtering.
+#' @param threshold A numeric value specifying the minimum frequency threshold for variables to retain.
+#' @param max.T A numeric value specifying the maximum allowed time for filtering rows.
+#' @param var_type_override A named vector indicating the types of variables (e.g., "categorical", "hierarchical").
+#'
+#' @return A filtered data.table containing only the rows and variables that meet the specified criteria.
+#'
+#' @importFrom data.table setDT setkey uniqueN rbindlist
+#' @importFrom parallel detectCores makeCluster clusterEvalQ clusterExport parLapply stopCluster
+#' @examples
+#' \dontrun{
+#' library(data.table)
+#'
+#' # Example data
+#' df <- data.table(ID = c(1, 1, 2, 2, 3),
+#'                  var = c("age", "sex", "age", "sex", "age"),
+#'                  t = c(0.5, 1, 2, 3, 0.5))
+#' df_population <- data.table(ID = c(1, 2, 3))
+#' var_type_override <- c(age = "numerical", sex = "categorical")
+#'
+#' # Run pre-filtering
+#' result <- pre_filter_dt_parallel(
+#'   df = df,
+#'   df_population = df_population,
+#'   threshold = 0.5,
+#'   max.T = 2,
+#'   var_type_override = var_type_override
+#' )
+#' print(result)
+#' }
+#' 
+#' @export
 pre_filter_dt_parallel <- function(df, df_population, threshold, max.T, var_type_override) {
-  library(data.table)
-  library(parallel)
-  
   # Define count_unique_ids inside the function
   count_unique_ids <- function(sub_df) {
     var_name <- unique(sub_df$var)
