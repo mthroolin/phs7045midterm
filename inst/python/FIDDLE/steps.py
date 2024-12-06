@@ -288,7 +288,7 @@ def transform_time_invariant_table(df_in, df_population):
     df_value = df_value.reindex(index=df_population.index, fill_value=np.nan)
     df_value.columns = [str(col) + '_value' for col in df_value.columns]
 
-    print('(N \u00D7 ^d) table            :\t', df_value.shape)
+    print('(N x ^d) table            :\t', df_value.shape)
     print('number of missing entries :\t', '{} out of {} total'.format(df_value.isna().sum().sum(), df_value.size))
     return df_value
 
@@ -314,6 +314,7 @@ def map_time_invariant_features(df, args):
             col_is_numeric = [is_numeric(v) for v in col_data if not pd.isnull(v)]
             if not all(col_is_numeric) and any(col_is_numeric): # have mixed type values
                 numeric_mask = col_data.apply(is_numeric)
+                numeric_mask = numeric_mask.astype(bool)
                 df[col+'_str'] = df[col].copy()
                 df.loc[~numeric_mask, col] = np.nan
                 df.loc[numeric_mask, col+'_str'] = np.nan
@@ -488,8 +489,8 @@ def transform_time_series_table(df_in, args):
     # Determine frequent variables -> we'll calculate statistics, mask, and delta_time only on these
     variables_num_freq = get_frequent_numeric_variables(df_in, variables, theta_freq, args)
     print('Frequent variables :', list(variables_num_freq))
-    print('{} = {}'.format('M\u2081', len(variables_num_freq)))
-    print('{} = {}'.format('M\u2082', len(variables) - len(variables_num_freq)))
+    print('{} = {}'.format('M1', len(variables_num_freq)))
+    print('{} = {}'.format('M2', len(variables) - len(variables_num_freq)))
     print('{} = {} {}'.format('k ', len(stats_functions), stats_functions))
 
     print()
@@ -523,7 +524,7 @@ def transform_time_series_table(df_in, args):
     # Handle IDs not in the table
     df_original = list(out.values())[0]
     df_copy = pd.DataFrame().reindex_like(df_original)
-    for i, j in df_original.dtypes.iteritems():
+    for i, j in df_original.dtypes.items():
         if i.endswith('_mask'):
             assert j == bool
             df_copy[i] = False
@@ -558,7 +559,7 @@ def transform_time_series_table(df_in, args):
         [(ID, t_) for t_ in list(df_.index)]
         for ID, df_ in sorted(D_timeseries.items())
     ], [])
-    index = pd.Index(index, names=['ID', 't_range'])
+    index = pd.MultiIndex.from_tuples(index, names=['ID', 't_range'])
     assert len(index) == N * L
 
     ## Assume all dataframes have the same columns, used after concatenation
@@ -582,7 +583,7 @@ def transform_time_series_table(df_in, args):
     print('(freq) number of missing entries :\t',
           '{} out of {}={} total'.format(
               (1-ts_mask).astype(int).sum().sum(),
-              '\u00D7'.join(str(i) for i in [N,L,ts_mask.shape[1]]), ts_mask.size))
+              'x'.join(str(i) for i in [N,L,ts_mask.shape[1]]), ts_mask.size))
 
     ## Freq: Count imputed entries using mask and dt
     ts_delta_time = df_time_series[[col for col in df_time_series if col.endswith('_delta_time')]]
@@ -604,10 +605,10 @@ def transform_time_series_table(df_in, args):
     print('(non-freq) number of missing entries :\t',
           '{} out of {}={} total'.format(
               non_freqs.isna().sum().sum(),
-              '\u00D7'.join(str(i) for i in [N,L,non_freqs.shape[1]]), non_freqs.size))
+              'x'.join(str(i) for i in [N,L,non_freqs.shape[1]]), non_freqs.size))
 
     print()
-    print('(N \u00D7 L \u00D7 ^D) table :\t', (N, L, len(columns)))
+    print('(N x L x ^D) table :\t', (N, L, len(columns)))
     return df_time_series, dtypes
 
 def map_time_series_features(df_time_series, dtypes, args):
@@ -657,6 +658,7 @@ def map_time_series_features(df_time_series, dtypes, args):
             col_is_numeric = [is_numeric(v) for v in col_data if not pd.isnull(v)]
             if not all(col_is_numeric) and any(col_is_numeric): # have mixed type values
                 numeric_mask = col_data.apply(is_numeric)
+                numeric_mask = numeric_mask.astype(bool)
                 df[col+'_str'] = df[col].copy()
                 df.loc[~numeric_mask, col] = np.nan
                 df.loc[numeric_mask, col+'_str'] = np.nan

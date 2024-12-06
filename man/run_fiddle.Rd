@@ -9,11 +9,13 @@ run_fiddle(
   population,
   T_,
   dt,
+  output_dir,
   theta_1 = 0.001,
   theta_2 = 0.001,
   theta_freq = 1,
   stats_functions = c("min", "max", "mean"),
-  binarize = TRUE,
+  config_path = system.file("python", "FIDDLE", "config-default.yaml", package =
+    "fiddleR"),
   python_env = "test_env"
 )
 }
@@ -34,9 +36,9 @@ run_fiddle(
 
 \item{stats_functions}{Statistical functions to apply. Default is c("min", "max", "mean").}
 
-\item{binarize}{Binarize flag. Default is TRUE.}
-
 \item{python_env}{Python virtual environment or path to Python executable.}
+
+\item{config}{Path to config file. Defaults to FIDDLE/conf-default.yaml}
 }
 \value{
 Outputs from the FIDDLE Python module.

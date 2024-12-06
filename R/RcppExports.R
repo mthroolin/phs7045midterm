@@ -2,6 +2,6 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 pre_filter_cpp <- function(df, df_population, threshold, max_T, var_type_override) {
-    .Call('_phs7045midterm_pre_filter_cpp', PACKAGE = 'phs7045midterm', df, df_population, threshold, max_T, var_type_override)
+    .Call('_fiddleR_pre_filter_cpp', PACKAGE = 'fiddleR', df, df_population, threshold, max_T, var_type_override)
 }
 

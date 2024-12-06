@@ -1,2 +1,7 @@
 *_cache
 *_files
+.Rproj.user
+.gitignore
+.Rhistory
+.Rbuildignore
+phs7045final.Rproj

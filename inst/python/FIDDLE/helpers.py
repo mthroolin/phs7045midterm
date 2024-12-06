@@ -101,7 +101,7 @@ def calculate_variable_counts(df_data, df_population):
     """
     df = df_data.copy()
     df['count'] = 1
-    df_count = df[[ID_col, var_col, 'count']].groupby([ID_col, var_col]).count().unstack(1, fill_value=0)
+    df_count = df[[ID_col, var_col, 'count']].groupby([ID_col, var_col], observed=False).count().unstack(1, fill_value=0)
     df_count.columns = df_count.columns.droplevel()
     df_count = df_count.reindex(df_population.index, fill_value=0)
     ## Slower version
@@ -219,7 +219,7 @@ def pivot_event_table(df):
     eps = 1e-6
     m_dups = df.duplicated([t_col, var_col], keep=False)
     df_dups = df[m_dups].copy()
-    for v, df_v in df_dups.groupby(var_col):
+    for v, df_v in df_dups.groupby(var_col, observed=False):
         df_dups.loc[df_v.index, t_col] += eps * np.arange(len(df_v))
     
     df = pd.concat([df[~m_dups], df_dups])
@@ -234,7 +234,7 @@ def presence_mask(df_i, variables, T, dt):
         mask_i = pd.DataFrame().reindex(index=_get_time_bins_index(T, dt), columns=list(variables), fill_value=False)
     else:
         mask_i = df_i.groupby(
-            pd.cut(df_i.index, _get_time_bins(T, dt), right=False)
+            pd.cut(df_i.index, _get_time_bins(T, dt), right=False), observed=False
         ).apply(lambda x: x.notnull().any())
         mask_i = mask_i.reindex(columns=variables, fill_value=False)
     
@@ -331,7 +331,7 @@ def impute_values(df, columns, T, dt, mask=None, impute_method='ffill'):
 def most_recent_values(df_i, columns, T, dt):
     df_bin = df_i.copy()
     df_bin.index = pd.cut(df_bin.index, _get_time_bins(T, dt), right=False)
-    df_v = df_bin.groupby(level=0).last()
+    df_v = df_bin.groupby(level=0, observed=False).last()
     df_v.columns = [str(col) + '_value' for col in df_v.columns]
     df_v = df_v.reindex(_get_time_bins_index(T, dt))
     return df_v
@@ -345,7 +345,7 @@ def summary_statistics(df_i, columns, stats_functions, T, dt):
         df_numeric = df_i[columns]
         df = df_numeric.copy().astype(float)
         df.index = pd.cut(df.index, _get_time_bins(T, dt), right=False)
-        df_v = df.reset_index().groupby('index').agg(stats_functions)
+        df_v = df.reset_index().groupby('index', observed=False).agg(stats_functions)
         df_v.columns = list(map('_'.join, df_v.columns.values))
         df_v = df_v.reindex(_get_time_bins_index(T, dt))
         return df_v
@@ -477,6 +477,7 @@ def sparse_corrcoef(A, B=None):
     # The correlation coefficients are given by
     # C_{i,j} / sqrt(C_{i} * C_{j})
     d = np.diag(C)
+    d = np.maximum(d, np.finfo(float).eps)  # Replace zeros with a small positive value
     coeffs = C / np.sqrt(np.outer(d, d))
 
     return np.array(coeffs)

@@ -47,23 +47,23 @@ generate_data <- function(num_records, num_ids, num_vars) {
   df <- data.table(
     ID = as.character(IDs),
     t = t_values,
-    var = vars
+    variable_name = vars
   ) |> unique()
   
   # Identify numerical variables
   numerical_vars <- names(var_type_override)[var_type_override == "numerical"]
   
   # Remove duplicates for numerical variables
-  df_num <- df[var %in% numerical_vars]
-  df_cat <- df[!var %in% numerical_vars]
+  df_num <- df[variable_name %in% numerical_vars]
+  df_cat <- df[!variable_name %in% numerical_vars]
   
-  df_num <- unique(df_num, by = c("ID", "t", "var"))
+  df_num <- unique(df_num, by = c("ID", "t", "variable_name"))
   
   # Combine back
   df <- rbind(df_num, df_cat)
   
   # Generate values
-  df[, value := as.character(sample(c(NA_real_, rnorm(.N)), .N, replace = TRUE))]
+  df[, variable_value := as.character(sample(c(NA_real_, rnorm(.N)), .N, replace = TRUE))]
   
   # Generate population data
   df_population <- data.table(ID = as.character(1:num_ids))

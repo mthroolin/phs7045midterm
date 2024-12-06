@@ -1,4 +1,4 @@
-Package: phs7045midterm
+Package: fiddleR
 Title: What the Package Does (One Line, Title Case)
 Version: 0.0.0.9000
 Authors@R: 
@@ -15,3 +15,6 @@ Imports:
     data.table,
     Rcpp,
     reticulate
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
