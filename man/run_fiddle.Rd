@@ -5,24 +5,28 @@
 \title{Run FIDDLE Python Script with R Data}
 \usage{
 run_fiddle(
-  data,
-  population,
-  T_,
-  dt,
+  data_file,
+  population_file,
+  config_file,
   output_dir,
+  T_ = 4,
+  dt = 1,
   theta_1 = 0.001,
   theta_2 = 0.001,
   theta_freq = 1,
   stats_functions = c("min", "max", "mean"),
-  config_path = system.file("python", "FIDDLE", "config-default.yaml", package =
-    "fiddleR"),
+  impute_method = "ffill",
   python_env = "test_env"
 )
 }
 \arguments{
-\item{data}{A data frame or matrix to be used as the data input.}
+\item{data_file}{A data frame or matrix to be used as the data input.}
 
-\item{population}{A vector or data frame representing the population.}
+\item{population_file}{Path to a vector or data frame representing the population.}
+
+\item{config_file}{Path to config file.}
+
+\item{output_dir}{Path to output directory.}
 
 \item{T_}{Time period.}
 
@@ -36,9 +40,9 @@ run_fiddle(
 
 \item{stats_functions}{Statistical functions to apply. Default is c("min", "max", "mean").}
 
-\item{python_env}{Python virtual environment or path to Python executable.}
+\item{impute_method}{Method to use for imputing missing values ("ffill","mean","median", "linear", or "none"). Default is "ffill".}
 
-\item{config}{Path to config file. Defaults to FIDDLE/conf-default.yaml}
+\item{python_env}{Python virtual environment or path to Python executable.}
 }
 \value{
 Outputs from the FIDDLE Python module.
