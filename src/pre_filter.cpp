@@ -68,7 +68,14 @@ DataFrame pre_filter_cpp(DataFrame df,
 
   std::unordered_set<std::string> categorical_vars;
 
+  // Hashmap searches have constant complexity usually, but these can
+  // add computing burden still. In cases like this, I recommend using
+  // a sorting algorithm instead, so that way, you can do a search 
+  // linearly and stop whenever you find something different (if that
+  // makes sense).
   for (int i = 0; i < var_types.size(); i++) {
+    // I also guess that this may be slow, when for-loop. 
+    // You should consider using regex (that could be faster).
     std::string type = Rcpp::as<std::string>(var_types[i]);
     std::string var_name = Rcpp::as<std::string>(var_names[i]);
     std::transform(type.begin(), type.end(), type.begin(), ::tolower);
@@ -87,6 +94,7 @@ DataFrame pre_filter_cpp(DataFrame df,
   for (int i = 0; i < n; ++i) {
     std::string var = Rcpp::as<std::string>(df_var[i]);
     if (categorical_vars.find(var) == categorical_vars.end()) {
+      // Not following this code. Let's talk in class!
       std::string id = Rcpp::as<std::string>(df_ID[i]);
       double t = df_t[i];
       std::ostringstream key;
@@ -107,6 +115,7 @@ DataFrame pre_filter_cpp(DataFrame df,
 
   // Step 5: Calculate variable frequencies
   // Rcout << "Calculate variable frequencies" << std::endl;
+  // Maps of maps... ugh! I think this is why your code could be slower!
   std::unordered_map<std::string, std::unordered_set<std::string>> var_IDs_map;
 
   for (int i = 0; i < n; ++i) {

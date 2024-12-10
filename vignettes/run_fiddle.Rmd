@@ -88,3 +88,7 @@ tensors = load_data(output_dir)
 s = tensors$s
 x = tensors$x
 ```
+
+```{r, eval= FALSE, include=FALSE}
+unlink(temp_dir, recursive = TRUE)
+```
