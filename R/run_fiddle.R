@@ -23,6 +23,10 @@ run_fiddle <- function(data_file, population_file, config_file, output_dir,
                        impute_method = "ffill",
                        python_env = "test_env") {
   
+  if (!dir.exists(output_dir)) {
+    dir.create(output_dir, recursive = TRUE)
+  } 
+  
   # Activate the virtual environment
   reticulate::use_virtualenv(python_env, required = TRUE)
   

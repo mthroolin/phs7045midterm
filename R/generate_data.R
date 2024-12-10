@@ -24,6 +24,7 @@
 #' head(df)
 #' head(df_population)
 #' var_type_override
+#' @import data.table
 #' @export
 generate_data <- function(num_records, num_ids, num_vars) {
   # Generate IDs

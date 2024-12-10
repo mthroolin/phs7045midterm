@@ -1,10 +1,10 @@
 Package: fiddleR
-Title: What the Package Does (One Line, Title Case)
+Title: A R wrapper for FIDDLE
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
+    person("Michael", "Throolin", , "michael.throolin@utah.edu", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description: This package provides an R wrapper for the FIDDLE prepreprocessing pipeline.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -13,9 +13,13 @@ LinkingTo:
     Rcpp
 Imports: 
     data.table,
-    Rcpp,
     reticulate,
+    rjson,
     stats
 Suggests: 
+    knitr,
+    Rcpp,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+VignetteBuilder: knitr

@@ -1,0 +1,90 @@
+---
+title: "How to Run Fiddle"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{How to Run Fiddle}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+# Introduction
+
+FIDDLE stands for *F*lex*I*ble *D*ata-*D*riven Preprocessing Pipe*L*in*E* for Structured Clinical Data. This acronym may be a bit of a stretch, but it is a proposed methodology to standardize the data-preprocessing used in data analysis requiring machine learning. You can read more about FIDDLE in [JAMIA](https://doi.org/10.1093/jamia/ocaa139) or the [FIDDLE GitHub page](https://github.com/MLD3/FIDDLE).
+
+As FIDDLE was originally written in Python, this package is meant to provide an R wrapper to help those unfamiliar with Python to implement this pipeline in R. This vignette will show you how to run FIDDLE using the `run_fiddle` function.
+
+
+# Setup
+
+To begin, first load this package, `fiddleR`. Next, you need to setup a python environment which has the necessary libraries to run FIDDLE. You can do this by running the following code:
+
+```{r setup, eval = FALSE}
+library(fiddleR)
+
+# Setup python environment
+setup_python_env(envname = "test_env")
+```
+
+This code will create a new python environment in the current working directory called `test_env`. This environment will have the necessary libraries to run FIDDLE.
+
+
+# Running FIDDLE
+
+FIDDLE requires a few inputs, namely
+
+1. `data`: The path to the data file you intend to use for your ML analysis.
+2. `population`: The path to the a file that contains a vector of the population you intend to use for your ML analysis.
+3. `T_`:  The time of prediction; time-dependent features will be generated using data in $t \in [0, T]$.
+4. `dt`: The temporal granularity for which you want to look at time dependent data.
+5. `output_dir`: The directory where you want to save the output files.
+6. `config_file`: The path to the configuration file you want to use.
+
+Here is an example of a call to FIDDLE:
+
+
+```{r, eval = FALSE}
+dat <- system.file("extdata", "test1", "data.csv", package = "fiddleR")
+pop <- system.file("extdata", "test1",  "pop.csv", package = "fiddleR")
+config_path <- system.file("extdata", "test1", "config-1-parallel.yaml", package = "fiddleR")
+output_dir <- tempdir()
+
+
+run_fiddle(
+  data = dat, 
+  population = pop, 
+  T_ = 4, 
+  dt = 1, 
+  output_dir = output_dir,
+  config_file = config_path,
+  theta_1 = 0.001, 
+  theta_2 = 0.001, 
+  theta_freq = 1
+)
+```
+
+Note that when you run FIDDLE, the output directory will include some new files. Namely:
+
+- `s.npz`: a sparse array of shape (N, d)
+- `X.npz`: a sparse tensor of shape (N, L, D)
+- `s.feature_names.json`: names of _d_ time-invariant features
+- `X.feature_names.json`: names of _D_ time-series features
+- `x.feature_aliases.json`: aliases of duplicated time-invariant features
+- `X.feature_aliases.json`: aliases of duplicated time-series features
+
+You will end up using these files in your machine learning analysis. To load these into an R format, you can use the `load_data` function here.
+
+```{r, eval=FALSE}
+tensors = load_data(output_dir)
+
+# Access the data
+s = tensors$s
+x = tensors$x
+```

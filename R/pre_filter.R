@@ -25,7 +25,7 @@
 #'   \item Calculates the frequency of each variable as the proportion of unique IDs and retains 
 #'         variables with frequencies above the specified `threshold`.
 #' }
-#' @importFrom data.table setDT uniqueN :=
+#' @import data.table
 #' @examples
 #' library(data.table)
 #' 
@@ -33,7 +33,8 @@
 #' df <- data.table(
 #'   ID = c("1", "1", "2", "2", "3", "3", "4", "4", "5"),
 #'   t = c(1, 2, 3, NA, 1, 5, 0, NA, 8),
-#'   var = c("age", "heart_rate", "heart_rate", "sex", "age", "heart_rate", "bp_systolic", "sex", "bp_systolic"),
+#'   var = c("age", "heart_rate", "heart_rate", "sex", "age",
+#'             "heart_rate", "bp_systolic", "sex", "bp_systolic"),
 #'   value = c("55", "72", "80", "male", "60", "90", "120", "female", "130")
 #' )
 #' 
@@ -51,6 +52,7 @@
 #' # Apply the pre_filter_dt function
 #' filtered_df <- pre_filter_dt(df, df_population, threshold, max.T, var_type_override)
 #' print(filtered_df)
+#' @import data.table
 #' @export
 pre_filter_dt <- function(df, df_population, threshold, max.T, var_type_override) {
   # Convert to data.table for speed

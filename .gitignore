@@ -5,3 +5,6 @@
 .Rhistory
 .Rbuildignore
 phs7045final.Rproj
+inst/doc
+/doc/
+/Meta/

@@ -12,7 +12,7 @@
 #'
 #' @return A filtered data.table containing only the rows and variables that meet the specified criteria.
 #'
-#' @importFrom data.table setDT setkey uniqueN rbindlist
+#' @import data.table
 #' @importFrom parallel detectCores makeCluster clusterEvalQ clusterExport parLapply stopCluster
 #' @examples
 #' \dontrun{

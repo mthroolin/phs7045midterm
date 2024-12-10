@@ -4,12 +4,12 @@
 \name{fiddleR-package}
 \alias{fiddleR}
 \alias{fiddleR-package}
-\title{fiddleR: What the Package Does (One Line, Title Case)}
+\title{fiddleR: A R wrapper for FIDDLE}
 \description{
-What the package does (one paragraph).
+This package provides an R wrapper for the FIDDLE prepreprocessing pipeline.
 }
 \author{
-\strong{Maintainer}: First Last \email{first.last@example.com} (\href{https://orcid.org/YOUR-ORCID-ID}{ORCID})
+\strong{Maintainer}: Michael Throolin \email{michael.throolin@utah.edu} (\href{https://orcid.org/YOUR-ORCID-ID}{ORCID})
 
 }
 \keyword{internal}
