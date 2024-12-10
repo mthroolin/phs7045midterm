@@ -54,6 +54,11 @@
 #' print(filtered_df)
 #' @import data.table
 #' @export
+#' 
+# Comments from midterm:
+# The R implementation looks so much better! I would think twice
+# before jumping into C++. Perhaps you could try to find the bottle
+# neck and see if that could be improved.
 pre_filter_dt <- function(df, df_population, threshold, max.T, var_type_override) {
   # Convert to data.table for speed
   data.table::setDT(df)
