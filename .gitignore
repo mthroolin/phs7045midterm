@@ -1,2 +1,10 @@
 *_cache
 *_files
+.Rproj.user
+.gitignore
+.Rhistory
+.Rbuildignore
+phs7045final.Rproj
+inst/doc
+/doc/
+/Meta/
