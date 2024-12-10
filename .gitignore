@@ -1,3 +1,13 @@
 *_cache
 *_files
 .Rproj.user
+<<<<<<< HEAD
+=======
+.gitignore
+.Rhistory
+.Rbuildignore
+phs7045final.Rproj
+inst/doc
+/doc/
+/Meta/
+>>>>>>> c53b85064ce585d27e12e9f624d795a448c76b94

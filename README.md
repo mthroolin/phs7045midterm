@@ -1,28 +1,13 @@
-# Template project for Advanced Programming [![Slides and report render](../../actions/workflows/check-qmd-render.yaml/badge.svg)](../../actions/workflows/check-qmd-render.yaml)
 
-The template project has the following files:
+# fiddleR
 
-- `README.md`: this file.
-- `data/`: a folder for data files.
-- `.gitignore`: a file that tells git which files to ignore.
-- `slides.qmd`: a presentation in quarto format.
-- `report.qmd`: a report in quarto format.
-- `.github/workflows/check-qmd-render.yaml`: The workflow that builds the html and pdf files. New dependencies can be added on the step "Install dependencies"; the following installs the R packages data.table and slurmR from CRAN:
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/mthroolin/phs7045midterm/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mthroolin/phs7045midterm/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
 
-    ```yaml
-    - name: Install dependencies
-    run: |
-        install2.r data.table slurmR
-    ```
+`fiddleR` is an R package wrapper that enables those familiar with R to utilize the FIDDLE library developed in python.
+The base code for this library can be found in the github repo [https://github.com/MLD3/FIDDLE](https://github.com/MLD3/FIDDLE).
 
-  This workflow should complete without errors before you submit your project.
+Some functionality has been added to the python package contained in here, namely more methods for missing data imputation.
 
-## Instructions
-
-1. Use the qmd files to write your report and slides.
-
-2. Add any needed files (figures, C++, data, etc.) to the repository.
-
-2. If needed, add additional dependencies to the workflow file.
-
-3. Ensure the [report.pdf](report.pdf) and [slides.html](slides.html) files are generated.
+Please see the vignette `run_fiddle` for a detailed example of how to use this package.
