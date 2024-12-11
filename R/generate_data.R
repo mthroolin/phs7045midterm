@@ -3,6 +3,7 @@
 #' This function generates a synthetic dataset with specified numbers of records, IDs, 
 #' and variables. Numerical variables are ensured to have no duplicates across `ID`, 
 #' `t`, and `var`. It also generates metadata for variable types and population data.
+#' 
 #'
 #' @param num_records Integer. The total number of records to generate.
 #' @param num_ids Integer. The total number of unique IDs to generate.
