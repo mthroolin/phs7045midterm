@@ -1,0 +1,131 @@
+---
+title: My fancy presentation
+subtitle: For PHS 7045
+author: Michael Throolin
+format: revealjs
+embed-resources: true
+bibliography: references.bib
+---
+
+# Introduction
+
+- **EHR data** and **machine learning** tools have been used to develop patient risk stratification models.
+- **Challenges** with EHR data:
+  - High dimensionality.
+  - Irregular sampling.
+  - Preprocessing is tedious and time-consuming.
+- **FIDDLE** [@FIDDLE] was proposed to streamline this process.
+
+# What is FIDDLE?
+
+- **FIDDLE**: Flexible Data-Driven Pipeline for EHR data.
+  - Systematically transforms structured EHR data into ML-ready representations.
+- **Approach**:
+  - Data-driven.
+  - Allows for user customization.
+
+# FIDDLE Preprocessing Steps
+
+## Pre-filter
+
+- Remove rows with timestamps outside the observation period.
+- Eliminate rarely occurring variables.
+
+## Transform
+
+- **Time-invariant data**: Concatenated into a table.
+- **Time-dependent data**:
+  - Concatenated into a tensor.
+  - Multiple recordings per time bin: use the most recent recording.
+- Handle missing values using **carry-forward imputation**.
+
+## Post-filter
+
+- Remove features that are unlikely to be informative.
+- Combine duplicated features into a single feature.
+
+# Why FIDDLE
+
+- Systematic transformation of **structured EHR data**.
+- Outputs feature vectors that can be used in **machine learning models**.
+- Designed to reduce time and effort spent on data preprocessing.
+
+# My Project
+
+- Translating FIDDLE code from **Python to R**.
+
+# Solution Plan
+
+1. Convert items stored as **data frames** to **data tables** in R.
+2. Use **Rcpp** to speed up the code where possible.
+3. **Parallelize** operations where feasible.
+4. **Group assignment** for my EHR class where my group will propose improvements to FIDDLE.
+
+## Proposed Improvements to FIDDLE
+
+- **Imputation Method**: Use a different method for missing values.
+  - The last value carried forward may not always be feasible.
+- **Feature Removal**: Implement feature importance metrics instead of constant thresholds.
+
+# Preliminary Results
+
+- Implemented the **pre-filter step** in R and C++.
+- Simulated data to verify results matched between R and C++ codes.
+- **Microbenchmarking**: R code outperformed C++ code (because of data.table?).
+
+# Data Summary
+
+- **Simulated Data**:
+  - 995,165 rows of data.
+  - 10,000 subject-specific IDs.
+  - 100 variables: 90 numerical and 10 categorical.
+  - Time measurements between **0 and 10**.
+
+# Timing Results
+
+- **Benchmarking** of R and C++ versions:
+  - R version (`data.table`) vs C++ version (`Rcpp`).
+- **Benchmark Results**:
+  - R version showed better performance.
+
+```{r setup}
+#| label: some-code
+#| echo: false
+#| cache: true
+
+# Load libraries
+library(microbenchmark); library(data.table); library(Rcpp)
+set.seed(10162024)
+source("code/generate_data.R")
+source("code/pre_filter.R")
+sourceCpp("code/pre_filter.cpp")
+
+
+result_R <- pre_filter_dt(df, df_population, threshold, max.T, var_type_override)
+result_Cpp <- pre_filter_cpp(df, df_population, threshold, max.T, var_type_override)
+
+
+# Benchmarking
+set.seed(10162024)
+benchmark_result <- microbenchmark(
+  R_version = {
+    result_R <- pre_filter_dt(df, df_population, threshold, max.T, var_type_override)
+  },
+  Cpp_version = {
+    result_Cpp <- pre_filter_cpp(df, df_population, threshold, max.T, var_type_override)
+  },
+  times = 5  # Number of times to run each function
+)
+
+# Display benchmark results
+print(benchmark_result)
+```
+
+# Next Steps
+
+- Complete the translation of the **remaining pipeline steps** to R.
+- Experiment with alternative **imputation** and **feature selection** methods.
+
+# References
+ 
+
