@@ -1,0 +1,81 @@
+---
+title: fiddleR
+subtitle: Not the musician, the pipeline! 
+author: Michael Throolin
+format: revealjs
+embed-resources: true
+bibliography: references.bib
+---
+
+## FIDDLE Preprocessing Steps
+
+::: incremental
+### Pre-filter
+
+-   Filter to the observation period.
+-   Eliminate rare variables.
+
+### Transform
+
+-   Concatenate data into tables and tensors
+-   Impute missing values using **carry-forward imputation**.
+
+### Post-filter
+
+-   Remove uninformative features and combine duplicates.
+:::
+
+## PROJECT GOALS
+
+::: fragment
+### Midterm Goal
+
+- TRANSLATE PYTHON TO R
+
+- Translated Pre-filter Step, Benchmarked Results
+
+![](results_midterm.png)
+:::
+
+::: fragment
+#### Final Goals- Change of Plans
+
+- Modify code in python
+- Write a wrapper to implement package in `R`
+:::
+
+
+##  Implementing FIDDLE
+
+```{css}
+#| echo: false
+
+.output {
+max-height: 500px;
+overflow-y: scroll;
+}
+```
+
+```{r}
+#| echo: true
+#| cache: true
+#| output-location: fragment
+#| class-output: hscroll
+
+fiddleR::run_fiddle(
+  data_file = "C:/Users/mthro/Desktop/phs-EHRanalysis/final-paper/ehrBOTreformat.csv",
+  population_file = "C:/Users/mthro/Desktop/phs-EHRanalysis/final-paper/patients.csv",
+  config_file = "C:/Users/mthro/Desktop/phs-EHRanalysis/final-paper/config-default.yaml",
+  output_dir = "C:/Users/mthro/Desktop/phs-EHRanalysis/final-paper/fiddle_output_ffill",
+  T_ = 52,
+  dt = 1,
+  theta_1 = .001,
+  theta_2 = .001,
+  impute_method = "ffill",
+)
+```
+
+
+# Questions?
+
+# References

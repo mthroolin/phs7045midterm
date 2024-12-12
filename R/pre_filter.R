@@ -27,6 +27,7 @@
 #' }
 #' @import data.table
 #' @examples
+#' @export
 #' library(data.table)
 #' 
 #' # Sample dataset

@@ -21,17 +21,13 @@ load_npz = function(npz_path,
   # Resolve Python executable path
   python_path <- reticulate::virtualenv_python(python_env)
   
-  np <- reticulate::import("numpy")
-  scipy_sparse = reticulate::import("scipy.sparse")
+  sparse = reticulate::import("sparse")
   
   # Load the .npz file
-  npz_file <- np$load(npz_path)
-  
-  # Access the tensor (replace 'tensor_name' with the actual key)
-  tensor <- array(npz_file["data"], dim = npz_file["shape"])
+  npz_file <- sparse$load_npz(npz_path)$todense()
   
   # Return the output
-  return(tensor)
+  return(npz_file)
 }
 
 #' Load Data from an Output Directory
@@ -55,6 +51,11 @@ load_npz = function(npz_path,
 #' @export
 load_data = function(output_dir,
                      python_env = "test_env") {
+  # Activate the virtual environment
+  reticulate::use_virtualenv(python_env, required = TRUE)
+  
+  # Resolve Python executable path
+  python_path <- reticulate::virtualenv_python(python_env)
   
   s_matrix = load_npz(file.path(output_dir, "S.npz"))
   x_tensor = load_npz(file.path(output_dir, "X.npz"))
